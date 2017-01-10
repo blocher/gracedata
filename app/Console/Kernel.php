@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\ScrapeSermons::class
+        Commands\ScrapeSermons::class,
+        Commands\ScrapeGraceNotes::class
     ];
 
     /**
