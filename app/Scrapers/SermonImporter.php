@@ -15,13 +15,16 @@ function __construct() {
 
 function setup_wordpress() {
   date_default_timezone_set('America/New_York');
+  $_SERVER['SERVER_NAME'] = 'IMPORTER';
   require_once( '../grace/public/wp-load.php' );
   require_once(ABSPATH . 'wp-admin/includes/media.php');
   require_once(ABSPATH . 'wp-admin/includes/file.php');
   require_once ( ABSPATH . 'wp-admin/includes/image.php' );
 }
 
-function import($sermons) {
+function import() {
+  $import_file = Storage::disk('local')->get('sermons.phpserial');
+  $sermons = unserialize($import_file);
 
   echo PHP_EOL . 'STARTING' . PHP_EOL;
   $i=0;
@@ -67,7 +70,7 @@ function import($sermons) {
       update_field( 'time_given', $time, $id );
     }
 
-    update_field( 'occassion', $sermon['occasion'], $id );
+    update_field( 'occasion', $sermon['occasion'], $id );
     update_field( 'preacher', $sermon['preacher'], $id );
 
     $attachment_title = $sermon['day']->format("Y-m-d") . ' - ' . $sermon['title'] . ' - ' . $sermon['preacher'];
