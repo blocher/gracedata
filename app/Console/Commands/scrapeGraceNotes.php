@@ -41,10 +41,10 @@ class ScrapeGraceNotes extends Command
      */
     public function handle()
     {
-        $scraper = new GracenotesScraper();
+        $scraper = new GraceNotesScraper();
         $sermons = $scraper->scrape();
 
-        $importer = new GracenotesImporter();
+        $importer = new GraceNotesImporter();
         $importer->import();
     }
 }

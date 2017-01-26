@@ -24,6 +24,9 @@ class GracenotesScraper extends \App\Scrapers\Scraper {
 
   public function scrape() {
 
+    $months = ['December'=>'Dec', 'January'=>'Jan', 'February'=>'Feb', 'March'=>'Mar', 'April'=>'Apr', 'May'=>'May', 'June'=>'Jun', 'July'=>'Jul', 'August'=>'Aug', 'September'=>'Sep', 'October'=>'Oct', 'November'=>'Nov'];
+    $years = range('2006', '2017');
+
     $results = [];
     foreach ($this->categories as $category=>$category_name) {
       $base_url = $this->url . $category;
@@ -66,20 +69,45 @@ class GracenotesScraper extends \App\Scrapers\Scraper {
 
           $month = $date = '';
           if ($category == 96) {
-            $month = str_ireplace('Grace Notes', '', $title);
-            $month = trim ($month,',');
-            $month = trim($month);
-            $result['month'] = $month;
+            $date = str_ireplace('Grace Notes', '', $title);
+            $date = trim ($date,',');
+            $date = trim($date);
+            $result['date'] = $date;
+            $result['month'] = $result['year'] = '';
+            foreach ($months as $full=>$month) {
+              if (strpos($date,$month)!==false) {
+                $result['month'] = $full;
+                break;
+              }
+            }
+
+            foreach ($years as $year) {
+              if (strpos($date,(string)$year)!==false) {
+                $result['year'] = $year;
+                break;
+              }
+            }
+            $result['month_description'] = $date;
+            $date = $result['month'] . ' 1, ' . $result['year'];
+            $result['published_date'] = new Carbon($date, new \DateTimeZone('America/New_York'));
+            $result['title'] = 'Grace Notes: ' . $result['month_description'];
           }
 
           if ($category == 119) {
-            $date = str_ireplace('Bulletin Insert for ', '', $title);
-            $date = str_ireplace('Bulletin Insert ', '', $date);
+            $date = str_ireplace('Bulletin Insert for', '', $title);
+            $date = str_ireplace('Bulletin Insert', '', $date);
+            $date = trim($date,',');
+            $date = trim ($date);
+            $date = trim($date,',');
             $result['date_string'] = $date;
             try {
-              $date = new Carbon($date, new \DateTimeZone('America/New_York'));
+
+              echo $date;
+              $carbon = new Carbon($date, new \DateTimeZone('America/New_York'));
+              $result['published_date'] = $carbon;
+
             } catch (\Exception $e) {
-              $date = $uploaded;
+              die($e->getMessage());
             }
             $result['date'] = $date;
 

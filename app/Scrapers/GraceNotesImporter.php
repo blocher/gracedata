@@ -44,15 +44,16 @@ function import() {
        'meta_query' => [
            [
                'key' => 'old_site_url',
-               'value' => $record['link'],
+               'value' => 'http://gracealex.org' . $record['link'],
                'compare' => '=',
            ]
        ],
-       'post_type' => 'all',
+       'post_type' => 'any',
        'posts_per_page' => 1,
     ];
     $old_posts = get_posts($args);
-
+    // echo PHP_EOL . PHP_EOL .  'http://gracealex.org' . $record['link'] . PHP_EOL . PHP_EOL ;
+    // var_dump($old_posts);
     $cat_id = $record['category_id'];
     $post_type = $this->categories[$cat_id];
     $post = array(
@@ -60,7 +61,7 @@ function import() {
         'post_title' => $record['title'],
         'post_status' => 'publish',
         'post_type' => $post_type,
-        'post_date' => $record['uploaded']->format("Y-m-d H:i:s"),
+        'post_date' => $record['published_date']->format("Y-m-d H:i:s"),
     );
 
     if (count($old_posts)>0) {
@@ -79,16 +80,24 @@ function import() {
     }
 
     if (!empty($record['date'])) {
-      update_field( 'date', $record['date']->format("Y-m-d H:i:s"), $id );
+      update_field( 'date', $record['published_date']->format("Y-m-d H:i:s"), $id );
+    }
+
+    if (!empty($record['published_date'])) {
+      update_field( 'published_date', $record['published_date']->format("Y-m-d H:i:s"), $id );
+    }
+
+    if (!empty($record['month_description'])) {
+      update_field( 'month_description', $record['month_description'], $id );
     }
 
     if (!empty($record['date_string'])) {
       update_field( 'date_string', $record['date_string'], $id );
     }
 
-    if (!empty($record['month'])) {
-      update_field( 'month', $record['month'], $id );
-    }
+    // if (!empty($record['month'])) {
+    //   update_field( 'month', $record['month'], $id );
+    // }
 
 
     $attachment_title = $record['title'];
@@ -96,7 +105,7 @@ function import() {
 
     $this->attach_featured_image($record['localfile'],$id,$attachment_title, $attachment_date,'media_category',[4]);
     update_field( 'pdf_content', iconv('ISO-8859-1','UTF-8', $record['text']), $id );
-    update_field( 'old_site_url', $record['link'], $id );
+    update_field( 'old_site_url', 'http://gracealex.org' . $record['link'], $id );
 
     echo $id . ' ' . $record['title'] . PHP_EOL;
 
