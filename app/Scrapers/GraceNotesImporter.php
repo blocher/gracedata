@@ -15,14 +15,10 @@ function __construct() {
   $this->setup_wordpress();
 }
 
-
-
-
-
 function setup_wordpress() {
   $_SERVER['SERVER_NAME'] = 'localhost';
   date_default_timezone_set('America/New_York');
-  require_once( '../grace/public/wp-load.php' );
+  require_once( env('WORDPRESS_PATH') );
   require_once(ABSPATH . 'wp-admin/includes/media.php');
   require_once(ABSPATH . 'wp-admin/includes/file.php');
   require_once ( ABSPATH . 'wp-admin/includes/image.php' );

@@ -16,7 +16,7 @@ function __construct() {
 function setup_wordpress() {
   date_default_timezone_set('America/New_York');
   $_SERVER['SERVER_NAME'] = 'IMPORTER';
-  require_once( '../grace/public/wp-load.php' );
+  require_once( env('WORDPRESS_PATH') );
   require_once(ABSPATH . 'wp-admin/includes/media.php');
   require_once(ABSPATH . 'wp-admin/includes/file.php');
   require_once ( ABSPATH . 'wp-admin/includes/image.php' );
